@@ -1,7 +1,6 @@
 FROM php:8.3
 
-COPY ./src/*.{php,json} /app/
-COPY ./src/lib/ /app/lib/
+COPY ./src/ /app/
 
 WORKDIR /app/
 ENV PATH="$PATH:/usr/local/bin"
