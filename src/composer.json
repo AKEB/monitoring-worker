@@ -1,0 +1,20 @@
+{
+    "name": "babadzhanyan/monitoring-worker",
+    "version": "0.0.1",
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {},
+    "authors": [
+        {
+            "name": "Vadim Babadzhanyan",
+            "email": "akeb@akeb.ru"
+        }
+    ],
+    "support": {
+        "email": "akeb@akeb.ru"
+    },
+    "autoload": {
+        "classmap": ["lib"]
+    }
+}
