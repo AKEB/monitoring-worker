@@ -15,4 +15,5 @@ services:
         environment:
             - SERVER_HOST=${SERVER_HOST}
             - WORKER_NAME=${WORKER_NAME}
+            - WORKER_THREADS=${WORKER_THREADS}
 

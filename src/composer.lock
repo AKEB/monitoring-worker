@@ -4,12 +4,158 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a61f3ee13de2be093e903e30f650fd3",
-    "packages": [],
+    "content-hash": "3548738ba6f27523f5bec7b024d3d279",
+    "packages": [
+        {
+            "name": "akeb/curlget",
+            "version": "v1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AKEB/Framework-AKEB-curlget.git",
+                "reference": "d2054ad28ef406fc828e3a054741e4694d24b7f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AKEB/Framework-AKEB-curlget/zipball/d2054ad28ef406fc828e3a054741e4694d24b7f0",
+                "reference": "d2054ad28ef406fc828e3a054741e4694d24b7f0",
+                "shasum": ""
+            },
+            "require": {
+                "akeb/logger": "@stable",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Babadzhanyan",
+                    "email": "vadimakeb@gmail.com",
+                    "role": "Lead"
+                }
+            ],
+            "description": "Curl requests",
+            "support": {
+                "email": "vadimakeb@gmail.com",
+                "issues": "https://github.com/AKEB/Framework-AKEB-curlget/issues",
+                "source": "https://github.com/AKEB/Framework-AKEB-curlget",
+                "wiki": "https://github.com/AKEB/Framework-AKEB-curlget/wiki"
+            },
+            "time": "2024-05-22T09:09:34+00:00"
+        },
+        {
+            "name": "akeb/logger",
+            "version": "v1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AKEB/Framework-AKEB-logger.git",
+                "reference": "80ef85dc20e04c0ccee300961f358eeca2edcfbf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AKEB/Framework-AKEB-logger/zipball/80ef85dc20e04c0ccee300961f358eeca2edcfbf",
+                "reference": "80ef85dc20e04c0ccee300961f358eeca2edcfbf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "psr/log": "@stable"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Babadzhanyan",
+                    "email": "vadimakeb@gmail.com",
+                    "role": "Lead"
+                }
+            ],
+            "support": {
+                "email": "vadimakeb@gmail.com",
+                "issues": "https://github.com/AKEB/Framework-AKEB-logger/issues",
+                "source": "https://github.com/AKEB/Framework-AKEB-logger",
+                "wiki": "https://github.com/AKEB/Framework-AKEB-logger/wiki"
+            },
+            "time": "2024-05-22T09:08:03+00:00"
+        },
+        {
+            "name": "psr/log",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+                "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/3.0.2"
+            },
+            "time": "2024-09-11T13:17:53+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "akeb/curlget": 0
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

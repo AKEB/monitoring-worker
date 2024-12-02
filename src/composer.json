@@ -1,8 +1,9 @@
 {
-    "name": "babadzhanyan/monitoring-worker",
+    "name": "akeb/monitoring-worker",
     "version": "0.0.1",
     "require": {
-        "php": "^8.3"
+        "php": "^8.3",
+        "akeb/curlget": "@stable"
     },
     "require-dev": {},
     "authors": [
