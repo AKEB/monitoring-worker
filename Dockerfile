@@ -1,3 +1,5 @@
+ARG WORKER_VERSION="v0.0.0"
+
 FROM php:8.3
 
 ENV PATH="$PATH:/usr/local/bin"
