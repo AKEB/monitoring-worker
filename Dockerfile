@@ -19,4 +19,6 @@ COPY ./src/ /app/
 WORKDIR /app/
 RUN composer install
 
+ENV WORKER_VERSION=${WORKER_VERSION}
+
 CMD ["php", "main.php"]
