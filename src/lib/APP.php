@@ -32,6 +32,18 @@ class APP {
 		$this->logs_write_timeout = intval($_ENV['LOGS_WRITE_TIMEOUT'] ?? $this->logs_write_timeout);
 		$this->worker_version = strval($_ENV['WORKER_VERSION'] ?? $this->worker_version);
 
+		echo date("Y-m-d H:i:s",time()).' Config='.json_encode([
+			'server_host' => $this->server_host,
+			'worker_name' => $this->worker_name,
+			'worker_uid' => $this->worker_uid,
+			'worker_threads' => $this->worker_threads,
+			'jobs_get_timeout' => $this->jobs_get_timeout,
+			'loop_timeout' => $this->loop_timeout,
+			'response_send_timeout' => $this->response_send_timeout,
+			'logs_write_timeout' => $this->logs_write_timeout,
+			'worker_version' => $this->worker_version,
+		]) . PHP_EOL;
+
 	}
 
 	public function init() {
@@ -153,6 +165,8 @@ class APP {
 						continue;
 					}
 					$job['job'] = $job['job'] ?? [];
+					if (!is_array(is_array($job['job']))) continue;
+					if (!isset($job['job']['type'])) continue;
 
 					if ($job['job']['update_time'] + $job['job']['repeat_seconds'] > time()) {
 						$job['state'] = 'waiting';
@@ -162,26 +176,30 @@ class APP {
 						$job['state'] = '';
 						continue;
 					}
-					$job['pipes'] = [];
-					$job['resource'] = proc_open(
-						$command_php.' curl.php ',
-						$descriptor_spec,
-						$job['pipes'],
-						$cwd
-					);
-					if (is_resource($job['resource'])) {
-						$running_threads++;
+					if ($job['job']['type'] == static::JOB_TYPE_CURL) {
+						$job['pipes'] = [];
+						$job['resource'] = proc_open(
+							$command_php.' curl.php ',
+							$descriptor_spec,
+							$job['pipes'],
+							$cwd
+						);
+						if (is_resource($job['resource'])) {
+							$running_threads++;
 
-						$job_json = json_encode($job['job']);
-						fwrite($job['pipes'][0], $job_json, mb_strlen($job_json));
-						stream_set_blocking($job['pipes'][0], 0);
-						stream_set_timeout($job['pipes'][0], 5);
-						fclose($job['pipes'][0]);
-						$job['state'] = 'starting';
+							$job_json = json_encode($job['job']);
+							fwrite($job['pipes'][0], $job_json, mb_strlen($job_json));
+							stream_set_blocking($job['pipes'][0], 0);
+							stream_set_timeout($job['pipes'][0], 5);
+							fclose($job['pipes'][0]);
+							$job['state'] = 'starting';
+						} else {
+							// Не удалось запустить, откладываем на 5 секунд
+							$job['job']['update_time'] = time() + 5 - $job['job']['repeat_seconds'];
+							$job['state'] = 'error_runing';
+						}
 					} else {
-						// Не удалось запустить, откладываем на 5 секунд
-						$job['job']['update_time'] = time() + 5 - $job['job']['repeat_seconds'];
-						$job['state'] = 'error_runing';
+						$job['job']['update_time'] = time() + 3600;
 					}
 				}
 			}
