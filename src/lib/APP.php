@@ -11,11 +11,13 @@ class APP {
 	private $logs_write_timeout = 10; // Как часто писать сообщения в логах (в секундах) [LOGS_WRITE_TIMEOUT]
 
 	private $worker_id = '';
+	private $worker_version = '';
 	private $key = 'a5kcsXCDgmHg9UG7gCHCek8adMsNHFeE';
 	private $protocol_version = '1.0';
 	private $jobs = [];
 	private $job_sync_last_time = 0;
 
+	const JOB_TYPE_CURL = 0;
 
 	public function config() {
 		echo date("Y-m-d H:i:s",time()).' '.'Starting config'.PHP_EOL;
@@ -28,6 +30,8 @@ class APP {
 		$this->loop_timeout = intval($_ENV['LOOP_TIMEOUT'] ?? $this->loop_timeout);
 		$this->response_send_timeout = intval($_ENV['RESPONSE_SEND_TIMEOUT'] ?? $this->response_send_timeout);
 		$this->logs_write_timeout = intval($_ENV['LOGS_WRITE_TIMEOUT'] ?? $this->logs_write_timeout);
+		$this->worker_version = strval($_ENV['WORKER_VERSION'] ?? $this->worker_version);
+
 	}
 
 	public function init() {
@@ -37,6 +41,7 @@ class APP {
 			'worker_uid' => $this->worker_uid,
 			'key' => $this->key,
 			'protocol_version' => $this->protocol_version,
+			'worker_version' => $this->worker_version,
 		];
 		$headers = [
 			'Accept: application/json',
@@ -55,7 +60,7 @@ class APP {
 		$curl->connectTimeout = 20;
 		$curl->exec();
 		if ($curl->responseCode != 200 || !$curl->responseBody) {
-			echo date("Y-m-d H:i:s",time()).' '.'Response code: '. $curl->responseCode. PHP_EOL;
+			echo date("Y-m-d H:i:s",time()).' '.'Response code: '. $curl->responseCode.' Response Error:'. $curl->responseError. PHP_EOL;
 			exit(1);
 		}
 		if (!is_array($curl->responseBody)) {
@@ -292,7 +297,7 @@ class APP {
 				'response' => $job['response'],
 			];
 		}
-		// var_export($params);
+		var_export($params);
 		if (count($params['jobs']) < 1) return false;
 
 		$headers = [
@@ -311,9 +316,8 @@ class APP {
 		$curl->timeout = 10;
 		$curl->connectTimeout = 20;
 		$curl->exec();
-		// var_dump($curl->responseBody);
-		if ($curl->responseCode!= 200 ||!$curl->responseBody) return false;
-
+		if ($curl->responseCode != 200 ||!$curl->responseBody) return false;
+		echo date("Y-m-d H:i:s",time()).' '.'sendJobState True'.PHP_EOL;
 		return true;
 	}
 }

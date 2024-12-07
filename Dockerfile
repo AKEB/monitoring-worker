@@ -1,8 +1,5 @@
 FROM php:8.3
 
-COPY ./src/ /app/
-
-WORKDIR /app/
 ENV PATH="$PATH:/usr/local/bin"
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -18,6 +15,8 @@ RUN apt-get install -y --allow-unauthenticated \
 RUN docker-php-ext-install curl \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+COPY ./src/ /app/
+WORKDIR /app/
 RUN composer install
 
 CMD ["php", "main.php"]

@@ -33,7 +33,7 @@ jobs:
 
     - name: build the image
       run: |
-        docker buildx build \
+        WORKER_VERSION='${{github.ref_name}}' docker buildx build \
         --push \
         --tag akeb/monitoring-worker:${{github.ref_name}} \
         --tag akeb/monitoring-worker:latest \

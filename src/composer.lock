@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3548738ba6f27523f5bec7b024d3d279",
+    "content-hash": "3274d858f32305230f24abbb7bd2ea6c",
     "packages": [
         {
             "name": "akeb/curlget",
-            "version": "v1.1.5",
+            "version": "v1.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AKEB/Framework-AKEB-curlget.git",
-                "reference": "d2054ad28ef406fc828e3a054741e4694d24b7f0"
+                "reference": "b4019aec00a31e9f553b70e007b40ab737b0a96c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AKEB/Framework-AKEB-curlget/zipball/d2054ad28ef406fc828e3a054741e4694d24b7f0",
-                "reference": "d2054ad28ef406fc828e3a054741e4694d24b7f0",
+                "url": "https://api.github.com/repos/AKEB/Framework-AKEB-curlget/zipball/b4019aec00a31e9f553b70e007b40ab737b0a96c",
+                "reference": "b4019aec00a31e9f553b70e007b40ab737b0a96c",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "source": "https://github.com/AKEB/Framework-AKEB-curlget",
                 "wiki": "https://github.com/AKEB/Framework-AKEB-curlget/wiki"
             },
-            "time": "2024-05-22T09:09:34+00:00"
+            "time": "2024-12-06T14:13:29+00:00"
         },
         {
             "name": "akeb/logger",
