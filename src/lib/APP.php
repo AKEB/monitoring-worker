@@ -30,7 +30,7 @@ class APP {
 		$this->loop_timeout = intval($_ENV['LOOP_TIMEOUT'] ?? $this->loop_timeout);
 		$this->response_send_timeout = intval($_ENV['RESPONSE_SEND_TIMEOUT'] ?? $this->response_send_timeout);
 		$this->logs_write_timeout = intval($_ENV['LOGS_WRITE_TIMEOUT'] ?? $this->logs_write_timeout);
-		$this->worker_version = strval($_ENV['WORKER_VERSION'] ?? $this->worker_version);
+		$this->worker_version = defined('WORKER_VERSION') ? constant('WORKER_VERSION') : $this->worker_version;
 
 		echo date("Y-m-d H:i:s",time()).' Config='.json_encode([
 			'server_host' => $this->server_host,

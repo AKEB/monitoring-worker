@@ -1,9 +1,10 @@
-ARG WORKER_VERSION="v0.0.0"
-
 FROM php:8.3
+
+ARG WORKER_VERSION="v0.0.0"
 
 ENV PATH="$PATH:/usr/local/bin"
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV WORKER_VERSION=${WORKER_VERSION}
 
 RUN apt-get clean \
     && apt-get update -y --allow-insecure-repositories
@@ -18,9 +19,11 @@ RUN docker-php-ext-install curl \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY ./src/ /app/
+
 WORKDIR /app/
 RUN composer install
 
-ENV WORKER_VERSION=${WORKER_VERSION}
+RUN touch /app/version.php
+RUN echo '<?php\ndefine("WORKER_VERSION", "'${WORKER_VERSION}'");' > /app/version.php
 
 CMD ["php", "main.php"]

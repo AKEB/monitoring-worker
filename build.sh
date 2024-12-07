@@ -4,7 +4,7 @@
 
 
 
-podman build \
+docker build \
   --build-arg WORKER_VERSION=local \
   --tag akeb/monitoring-worker:local \
   ${PWD}/
