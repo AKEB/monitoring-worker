@@ -34,8 +34,8 @@ jobs:
     - name: build the image
       run: |
         docker buildx build \
-        --push \
         --build-arg WORKER_VERSION=${{github.ref_name}} \
+        --push \
         --tag akeb/monitoring-worker:${{github.ref_name}} \
         --tag akeb/monitoring-worker:latest \
         --platform linux/amd64,linux/arm/v7,linux/arm64/v8 ./
