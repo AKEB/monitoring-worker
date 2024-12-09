@@ -5,6 +5,7 @@ ENV WORKER_VERSION=${WORKER_VERSION}
 
 COPY ./src/ /app/
 WORKDIR /app/
+RUN mkdir /app/logs/
 
 RUN composer install
 RUN touch /app/version.php
