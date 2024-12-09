@@ -5,8 +5,7 @@ $mypid = getmypid();
 srand(intval(round(microtime(true)*100)+$mypid));
 mt_srand(intval(round(microtime(true)*100)+$mypid));
 
-$sleep = rand(0, 20000) / 10000;
-error_log($mypid.' '."start ".$sleep);
+error_log($mypid.' '."start");
 
 $f = fopen('php://stdin', 'r');
 if ($f) {
@@ -32,11 +31,8 @@ if ($job && is_array($job)) {
 	$response = [
 		'status' => 1,
 		'status_code' => 0,
-		'status_text' => 'OK',
-		'response_time' => $sleep,
-		'response_text' => '',
+		'status_text' => '',
 		'response_unixtime' => time(),
-		'job' => $job,
 	];
 
 	// sleep(intval($sleep));
@@ -70,7 +66,7 @@ if ($job && is_array($job)) {
 		// $response['info'] = $info;
 		$response['status'] = 1;
 		$response['status_code'] = $info['http_code'] ?? 0;
-		$response['status_text'] = $info['http_code'] ?? 0;
+		$response['status_text'] = '';
 		$response['redirect_count'] = $info['redirect_count'] ?? 0;
 		$response['total_time'] = $info['total_time'] ?? 0;
 		$response['namelookup_time'] = $info['namelookup_time'] ?? 0;
