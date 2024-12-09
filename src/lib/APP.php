@@ -220,6 +220,7 @@ class APP {
 					$log_test.= 'Job ID: '. $job_id.' ';
 					$log_test.= 'Status: '. $job['status'].' ';
 					$log_test.= 'State: '. $job['state'].' ';
+					$log_test.= 'UpdateTime: '. date("Y-m-d H:i:s", $job['job']['update_time'] ?? 0).' ';
 					echo $log_test.PHP_EOL;
 				}
 			}
