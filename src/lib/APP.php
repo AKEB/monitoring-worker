@@ -5,7 +5,7 @@ class APP {
 	private $worker_name = 'local'; // '' // Worker name [WORKER_NAME]
 	private $worker_uid = ''; // Worker Unique identifier [WORKER_UID]
 	private $worker_threads = 4; // Worker threads count [WORKER_THREADS]
-	private $jobs_get_timeout = 5; // Как часто запрашивать новые данные в сервера (в секундах) [JOBS_GET_TIMEOUT]
+	private $jobs_get_timeout = 30; // Как часто запрашивать новые данные в сервера (в секундах) [JOBS_GET_TIMEOUT]
 	private $loop_timeout = 200000; // Задержка в цикле обработки (в миллисекундах) [LOOP_TIMEOUT]
 	private $response_send_timeout = 5; // Как часто отправлять данные на сервер (в секундах) [RESPONSE_SEND_TIMEOUT]
 	private $logs_write_timeout = 10; // Как часто писать сообщения в логах (в секундах) [LOGS_WRITE_TIMEOUT]
@@ -165,7 +165,7 @@ class APP {
 						continue;
 					}
 					$job['job'] = $job['job'] ?? [];
-					if (!is_array(is_array($job['job']))) continue;
+					if (!is_array($job['job'])) continue;
 					if (!isset($job['job']['type'])) continue;
 
 					if ($job['job']['update_time'] + $job['job']['repeat_seconds'] > time()) {
