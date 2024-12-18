@@ -9,11 +9,11 @@
     "authors": [
         {
             "name": "Vadim Babadzhanyan",
-            "email": "akeb@akeb.ru"
+            "email": "vadimakeb@gmail.com"
         }
     ],
     "support": {
-        "email": "akeb@akeb.ru"
+        "email": "vadimakeb@gmail.com"
     },
     "autoload": {
         "classmap": ["lib"]
