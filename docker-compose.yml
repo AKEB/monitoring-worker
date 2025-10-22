@@ -8,12 +8,12 @@ services:
         image: "akeb/monitoring-worker:dev"
         restart: unless-stopped
         build: .
+        env_file:
+            - .env
         volumes:
-            - ./src/lib:/app/lib
-            - ./src/main.php:/app/main.php
-            - ./src/composer.json:/app/composer.json
-        environment:
-            - SERVER_HOST=${SERVER_HOST}
-            - WORKER_NAME=${WORKER_NAME}
-            - WORKER_THREADS=${WORKER_THREADS}
+           - ./src:/app
+           - ./logs/php/:/var/log/php/:rw
+        extra_hosts:
+           - "monitoring.test:192.168.3.9"
+           - "monitoring.test:192.168.3.4"
 

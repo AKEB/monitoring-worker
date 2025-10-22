@@ -9,10 +9,11 @@ $PWD = __DIR__;
 
 $app = new \APP();
 
-$app->config();
+\Config::getInstance();
+date_default_timezone_set(\Config::getInstance()->timezone);
 
 $app->init();
 
-$app->run();
+$app->loop();
 
 echo "Exiting";

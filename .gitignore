@@ -1,3 +1,10 @@
 src/vendor/
+.git
+*.log
+*.log.*
 .env
 src/logs/
+/logs/nginx/*
+/logs/php/*
+/src/.phpunit.cache/
+.phpunit.result.cache

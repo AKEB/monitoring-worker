@@ -5,7 +5,9 @@
         "php": "^8.3",
         "akeb/curlget": "@stable"
     },
-    "require-dev": {},
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    },
     "authors": [
         {
             "name": "Vadim Babadzhanyan",

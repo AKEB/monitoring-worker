@@ -4,12 +4,51 @@ name: build monitoring-worker-dev
 
 on:
   push:
-    branches: main
+    branches:
+        - main
     # tags:
     #   - '*'
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.4']
+    name: PHP ${{ matrix.php }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+            path: ~/.composer/cache/files
+            key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
+          ini-values: variables_order=EGPCS
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          cd src/
+          rm -rf vendor composer.lock
+          composer install --prefer-install=auto --no-interaction --no-suggest
+
+      - name: Run Tests
+        run: |
+          cd src/
+          vendor/bin/phpunit --no-coverage --colors=never -c phpunit.xml
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: checkout code
