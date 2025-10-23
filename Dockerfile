@@ -16,4 +16,4 @@ RUN echo '<?php\n' > /app/version.php
 RUN echo 'define("WORKER_VERSION", "'${WORKER_VERSION}'");' >> /app/version.php
 RUN echo 'define("SERVER_URL", "'${SERVER_URL}'");' >> /app/version.php
 
-CMD ["/bin/bash", "-c", "cron;/run_on_start.sh;php -d error_log=/var/log/php/php_errors.log -d memory_limit=128M -d allow_url_fopen=true main.php"]
+CMD ["/bin/bash", "-c", "/usr/sbin/logrotate -f /etc/logrotate.conf;cron;/run_on_start.sh;php -d error_log=/var/log/php/php_errors.log -d memory_limit=128M -d allow_url_fopen=true main.php"]

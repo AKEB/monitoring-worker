@@ -26,7 +26,6 @@ $response = [
 	'status' => 0,
 ];
 if ($job && is_array($job)) {
-
 	// CURL request
 	$response = [
 		'status' => 1,

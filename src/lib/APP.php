@@ -1,9 +1,12 @@
 <?php
 
 class APP {
-	private $jobs = [];
-	private $job_sync_last_time = 0;
+	private array $jobs = [];
+	private int $job_sync_last_time = 0;
 	private bool $restart_command_from_server = false;
+
+	private int $send_state_time = 0;
+	private array $send_state_jobs = [];
 
 	const JOB_TYPE_CURL = 0;
 
@@ -47,6 +50,15 @@ class APP {
 				) {
 					$jobs[$job_id]['update_time'] = $this->jobs[$job_id]['job']['update_time'];
 				}
+				if (
+					isset($this->jobs[$job_id]['job']) &&
+					is_array($this->jobs[$job_id]['job']) &&
+					isset($this->jobs[$job_id]['job']['start_time']) &&
+					$this->jobs[$job_id]['job']['start_time'] > 0
+				) {
+					$jobs[$job_id]['start_time'] = $this->jobs[$job_id]['job']['start_time'];
+				}
+
 				$this->jobs[$job_id]['job'] = $jobs[$job_id];
 			}
 		}
@@ -127,8 +139,8 @@ class APP {
 		$cwd = $PWD;
 		$command_php = 'php -d memory_limit=32M -d allow_url_fopen=true -d error_log='.$log_file;
 		$log_time = 0;
-		$send_time = 0;
-		$send_jobs = [];
+		$this->send_state_time = 0;
+		$this->send_state_jobs = [];
 		while (true && !$this->restart_command_from_server) {
 			if ($this->job_sync_last_time < time() - \Config::getInstance()->jobs_get_timeout) {
 				$this->getJobs();
@@ -160,13 +172,15 @@ class APP {
 						unset($job['resource']);
 						$job['pipes'] = [];
 						if ($process_stat['exitcode'] == 0 || ($process_stat['exitcode'] == -1 && $process_stat['termsig'] == 15)) {
-							$job['job']['update_time'] = time();
+							\Config::getInstance()->error_log('Finish job_id: '.$job_id);
+							$job['job']['update_time'] = time() - (time() - intval($job['job']['start_time']??time()));
 							$job['state'] = 'finished';
 						} else {
+							\Config::getInstance()->error_log('Finish error job_id: '.$job_id);
 							$job['job']['update_time'] = time() - $job['job']['repeat_seconds'];
 							$job['state'] = 'finished with error';
 						}
-						$send_jobs[] = $job;
+						$this->send_state_jobs[] = $job;
 					} else {
 						// Задача работает
 						$job['state'] = 'running';
@@ -193,6 +207,7 @@ class APP {
 						continue;
 					}
 					if ($job['job']['type'] == static::JOB_TYPE_CURL) {
+						\Config::getInstance()->error_log('Start job_id: '.$job_id);
 						$job['pipes'] = [];
 						$job['resource'] = proc_open(
 							$command_php.' curl.php ',
@@ -209,6 +224,7 @@ class APP {
 							stream_set_timeout($job['pipes'][0], 5);
 							fclose($job['pipes'][0]);
 							$job['state'] = 'starting';
+							$job['job']['start_time'] = time();
 						} else {
 							// Не удалось запустить, откладываем на 5 секунд
 							$job['job']['update_time'] = time() + 5 - $job['job']['repeat_seconds'];
@@ -220,12 +236,9 @@ class APP {
 				}
 			}
 			unset($job);
-			if ($send_time < time() - \Config::getInstance()->response_send_timeout && $send_jobs) {
+			if ($this->send_state_time < time() - \Config::getInstance()->response_send_timeout && $this->send_state_jobs) {
 				// Отправить результат и update_time
-				if ($this->sendJobsState($send_jobs)) {
-					$send_time = time();
-					$send_jobs = [];
-				}
+				$this->sendJobsState();
 			}
 			if ($log_time < time() - \Config::getInstance()->logs_write_timeout) {
 				$log_time = time();
@@ -234,6 +247,7 @@ class APP {
 					$log_test = 'Job ID: '. $job_id.' ';
 					$log_test .= 'Status: '. $job['status'].' ';
 					$log_test .= 'State: '. $job['state'].' ';
+					$log_test .= 'StartTime: '. date("Y-m-d H:i:s", $job['job']['start_time'] ?? 0).' ';
 					$log_test .= 'UpdateTime: '. date("Y-m-d H:i:s", $job['job']['update_time'] ?? 0).' ';
 					\Config::getInstance()->error_log($log_test);
 				}
@@ -242,7 +256,12 @@ class APP {
 		}
 	}
 
-	private function sendJobsState(?array $jobs): void {
+	private function sendJobsState(): void {
+		if (!$this->send_state_jobs) {
+			$this->send_state_time = time();
+			$this->send_state_jobs = [];
+			return;
+		}
 		\Config::getInstance()->error_log('Starting sendJobsState function');
 		$params = [
 			'worker_key_hash' => \Config::getInstance()->worker_key_hash,
@@ -258,9 +277,9 @@ class APP {
 			'Content-Type: application/json;charset=utf-8',
 			'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0',
 		];
-		foreach ($jobs as $job) {
+		foreach ($this->send_state_jobs as $job) {
 			if (!$job || !is_array($job) || !isset($job['job']) || !is_array($job['job']) || !isset($job['job']['job_id']) || !$job['job']['job_id']) continue;
-			\Config::getInstance()->error_log('Send job: '.$job['job']['job_id']);
+			\Config::getInstance()->error_log(sprintf('Sending job %d monitor %d', $job['job']['job_id'], $job['job']['id']));
 			$params['jobs'][] = [
 				'job_id' => $job['job']['job_id'],
 				'monitor_id' => $job['job']['id'],
@@ -268,8 +287,12 @@ class APP {
 				'response' => $job['response'],
 			];
 		}
-		if (count($params['jobs']) < 1) return;
-		$curl = new \AKEB\CurlGet(\Config::getInstance()->server_host . 'api/monitoring/get/', [], [], $headers);
+		if (count($params['jobs']) < 1) {
+			$this->send_state_time = time();
+			$this->send_state_jobs = [];
+			return;
+		}
+		$curl = new \AKEB\CurlGet(\Config::getInstance()->server_host . 'api/monitoring/state/', [], [], $headers);
 		$curl->setBody(json_encode($params));
 		$curl->setMethod('POST');
 		$curl->setDebug(false);
@@ -280,7 +303,12 @@ class APP {
 		$curl->timeout = 10;
 		$curl->connectTimeout = 20;
 		$curl->exec();
-		if ($curl->responseCode != 200 ||!$curl->responseBody) return;
+		if ($curl->responseCode != 200 ||!$curl->responseBody) {
+			$this->send_state_time = time();
+			return;
+		}
+		$this->send_state_time = time();
+		$this->send_state_jobs = [];
 		\Config::getInstance()->error_log('Finished sendJobsState function');
 	}
 

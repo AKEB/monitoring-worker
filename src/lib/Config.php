@@ -82,7 +82,7 @@ class Config {
 		$this->proxy_host = $this->getenv('PROXY_HOST', ConfigEnvType::STRING, '');
 		$this->proxy_type = $this->getenv('PROXY_TYPE', ConfigEnvType::STRING, '');
 		$this->worker_key_hash = $this->getenv('WORKER_KEY_HASH', ConfigEnvType::STRING, '');
-		$this->worker_threads = $this->getenv('WORKER_THREADS', ConfigEnvType::INT, 4);
+		$this->worker_threads = $this->getenv('WORKER_THREADS', ConfigEnvType::INT, 10);
 		$this->jobs_get_timeout = $this->getenv('JOBS_GET_TIMEOUT', ConfigEnvType::INT, 30);
 		$this->loop_timeout = $this->getenv('LOOP_TIMEOUT', ConfigEnvType::INT, 200000);
 		$this->response_send_timeout = $this->getenv('RESPONSE_SEND_TIMEOUT', ConfigEnvType::INT, 5);
